@@ -9,5 +9,10 @@ add_executable(DicotomiaTessuti
         dicotomia_tessuti.c
         chiavi.h
         chiavi.c
+        colori_ansi.h
         tessuti.c
-        tessuti.h)
+        tessuti.h
+        domanda.h
+        domanda.c
+        errori.h
+        domanda_tessuto.h)

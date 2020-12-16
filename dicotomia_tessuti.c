@@ -12,7 +12,7 @@ static inline void stampa_chiave_annidato(struct chiave *c) {
 
 int main() {
     crea_tessuti();
-    stampa_chiave_annidato(connettivo);
+    stampa_chiave_annidato(muscolare);
 
     return EXIT_SUCCESS;
 }

@@ -7,20 +7,53 @@
 #include "chiavi.h"
 #include <stdlib.h>
 
-chiave *crea_chiave_no_sottotipi(const char *nome);
+chiave *crea_chiave_no_sottotipi(domanda *domanda, const char *nome);
 
 void crea_tessuti();
 
-chiave *lasso,
-        *denso,
-        *cartilagineo,
-        *osseo,
-        *emopoietico,
-        *linfoide,
-        *adiposo;
+// definizioni dei nomi di tutti i gruppi di tessuti.
 
-chiave *specializzato, *sostegno, *propriamente_detto, *cellulare;
+#define NOME_NERVOSO "Nervoso"
+#define NOME_STRIATO "Striato"
+#define NOME_CARDIACO "Cardiaco"
+#define NOME_LISCIO "Liscio"
+#define NOME_MUSCOLARE "Muscolare"
 
-chiave *connettivo;
+/*-------------------------------------------------------------------------*/
+
+// gruppo specifico:
+
+// chiave *lasso, *denso, *cartilagineo, *osseo, *emopoietico, *linfoide, *adiposo;
+
+// gruppo intermedio:
+
+// chiave *specializzato, *sostegno, *propriamente_detto, *cellulare;
+
+// gruppo generale:
+
+// chiave *connettivo;
+
+/*-------------------------------------------------------------------------*/
+
+// gruppo specifico: ASSENTE
+// gruppo intermedio: ASSENTE
+// gruppo generale:
+
+chiave *nervoso;
+
+/*-------------------------------------------------------------------------*/
+
+//gruppo specifico: ASSENTE
+
+// gruppo intermedio:
+
+chiave *striato, *cardiaco, *liscio;
+
+// gruppo generale:
+
+chiave *muscolare;
+
+
+/*-------------------------------------------------------------------------*/
 
 #endif //DICOTOMIATESSUTI_TESSUTI_H

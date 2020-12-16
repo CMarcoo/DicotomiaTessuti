@@ -5,10 +5,14 @@
 #ifndef DICOTOMIATESSUTI_CHIAVI_H
 #define DICOTOMIATESSUTI_CHIAVI_H
 
+#include "domanda.h"
+
 typedef struct chiave chiave; // pre-dichiarazione per consentire riferimenti a se-stesso nella struttura.
 
 /**
  * Chiave dicotomica, rappresentazione:
+ *
+ * domanda_chiave: la domanda che riporta a questa chiave.
  * nome : nome della chiave.
  * sottotipi : tutte le chiavi dicotomiche
  *             che sono sottoinsiemi della
@@ -20,6 +24,8 @@ typedef struct chiave chiave; // pre-dichiarazione per consentire riferimenti a 
  * di tipo NULL.
  */
 typedef struct chiave {
+    domanda *domanda_chiave;
+
     const char *nome;
     chiave **sottotipi;
     int num_sottotipi;
@@ -27,6 +33,7 @@ typedef struct chiave {
 
 /**
  * Instanzia una chiave dicotomica da i suoi parametri.
+ * @param domanda_chiave La domanda da usare per questa chiave.
  * @param nome Il nome della chiave dicotomica.
  * @param sottotipi I sottotipi della chiave,
  *        il parametro verrà automaticamente impostato a NULL
@@ -34,7 +41,7 @@ typedef struct chiave {
  * @param num_sottotipi Il numero di sottotipi della chiave da creare
  * @return La chiave, o NULL se si sono riscontrati errori.
  */
-chiave *crea_chiave(const char *nome, chiave **sottotipi, int num_sottotipi);
+chiave *crea_chiave(domanda *domanda_chiave, const char *nome, chiave **sottotipi, int num_sottotipi);
 
 /**
  * Aggiungi una chiave alla lista di chiavi correntemente presenti.
