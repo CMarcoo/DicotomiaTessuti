@@ -117,11 +117,16 @@ void stampa_chiave(struct chiave *c, int livello) {
     }
 
     for (int i = 0; i < livello; ++i) {
-        printf(" ");
+        printf("\t");
     }
 
     printf("Domanda: %s\n", c->domanda_chiave->testo);
-    printf("\tTessuto %s%c\n", c->nome, livello != 0 ? ' ' : ':');
+
+    for (int i = 0; i < livello; ++i) {
+        printf("\t");
+    }
+
+    printf("Tessuto %s%c\n", c->nome, livello != 0 ? ' ' : ':');
     if (c->num_sottotipi == 0) {
     } else {
         for (int i = 0; i < c->num_sottotipi; ++i) {
