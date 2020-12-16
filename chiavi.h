@@ -25,6 +25,30 @@ typedef struct chiave {
     int num_sottotipi;
 } chiave;
 
+/**
+ * Instanzia una chiave dicotomica da i suoi parametri.
+ * @param nome Il nome della chiave dicotomica.
+ * @param sottotipi I sottotipi della chiave,
+ *        il parametro verrà automaticamente impostato a NULL
+ *        se il numero di sottotipi equivale a 0.
+ * @param num_sottotipi Il numero di sottotipi della chiave da creare
+ * @return La chiave, o NULL se si sono riscontrati errori.
+ */
 chiave *crea_chiave(const char *nome, chiave **sottotipi, int num_sottotipi);
+
+/**
+ * Aggiungi una chiave alla lista di chiavi correntemente presenti.
+ * @param chiave La chiave nella quale aggiungere.
+ * @param da_aggiungere La chiave da aggiungere.
+ */
+void aggiungi_chiave(chiave *chiave, struct chiave *da_aggiungere);
+
+/**
+ * Raggruppa più chiavi in un unico gruppo;
+ * @param chiave[] chiavi
+ * @param num_chiavi numero di chiavi totali,
+ * @return il gruppo.
+ */
+chiave **raggruppa_chiavi(int num_chiavi, ...);
 
 #endif //DICOTOMIATESSUTI_CHIAVI_H
