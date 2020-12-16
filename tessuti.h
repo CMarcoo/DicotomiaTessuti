@@ -11,18 +11,16 @@ chiave *crea_chiave_no_sottotipi(const char *nome);
 
 void crea_tessuti();
 
-chiave
-        *lasso,
+chiave *lasso,
         *denso,
         *cartilagineo,
         *osseo,
         *emopoietico,
         *linfoide,
-        *
-        adiposo;
-
-chiave *connettivo;
+        *adiposo;
 
 chiave *specializzato, *sostegno, *propriamente_detto, *cellulare;
+
+chiave *connettivo;
 
 #endif //DICOTOMIATESSUTI_TESSUTI_H

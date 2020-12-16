@@ -8,6 +8,6 @@ include_directories(.)
 add_executable(DicotomiaTessuti
         dicotomia_tessuti.c
         chiavi.h
-        chiavi_dicotomiche.c
+        chiavi.c
         tessuti.c
         tessuti.h)

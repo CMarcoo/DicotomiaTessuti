@@ -51,4 +51,11 @@ void aggiungi_chiave(chiave *chiave, struct chiave *da_aggiungere);
  */
 chiave **raggruppa_chiavi(int num_chiavi, ...);
 
+/**
+ * Stampa la chiave dicotomica di un tessuto.
+ * @param c La chiave.
+ * @param livello Il livello di intentazione (0 per disabilitare).
+ */
+void stampa_chiave(struct chiave *c, int livello);
+
 #endif //DICOTOMIATESSUTI_CHIAVI_H

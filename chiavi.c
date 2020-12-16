@@ -89,3 +89,23 @@ chiave **raggruppa_chiavi(int num_chiavi, ...) {
 
     return chiavi;
 }
+
+/**
+ * Stampa la chiave dicotomica di un tessuto.
+ * @param c La chiave.
+ * @param livello Il livello di intentazione (0 per disabilitare).
+ */
+void stampa_chiave(struct chiave *c, int livello) {
+    for (int i = 0; i < livello; ++i) {
+        printf(" ");
+    }
+
+    printf("Tessuto %s%c\n", c->nome, livello != 0 ? ' ' : ':');
+    if (c->num_sottotipi == 0) {
+    } else {
+        for (int i = 0; i < c->num_sottotipi; ++i) {
+            chiave *chiave_temp = c->sottotipi[i];
+            stampa_chiave(chiave_temp, livello + 1);
+        }
+    }
+}
