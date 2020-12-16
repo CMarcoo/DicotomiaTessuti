@@ -6,4 +6,6 @@ set(CMAKE_C_STANDARD 11)
 include_directories(.)
 
 add_executable(DicotomiaTessuti
-        dicotomia_tessuti.c)
+        dicotomia_tessuti.c
+        chiavi.h
+        chiavi_dicotomiche.c)
