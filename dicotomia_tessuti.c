@@ -17,7 +17,7 @@ LRESULT CALLBACK MainWindowProdecure(HWND, UINT, WPARAM, LPARAM);
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
     WNDCLASSW windowsClass = {0};
 
-    windowsClass.hbrBackground = CreateSolidBrush(RGB(255, 209, 121));
+    windowsClass.hbrBackground = CreateSolidBrush(RGB(255, 209, 101));
     windowsClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     windowsClass.hInstance = hInst;
     windowsClass.lpszClassName = L"Chiavi Dicotomiche";
@@ -46,41 +46,62 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 #define NO_BUTTON 2
 #define TEXT_BOX 3
 
+HWND yesButton;
+HWND noButton;
+HWND questionText;
+
+void creaFinestre(HWND hwnd) {
+    yesButton = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
+                             WS_CHILD | WS_VISIBLE,
+                             110, 330, 120, 40,
+                             hwnd, (HMENU) YES_BUTTON, NULL, NULL
+    );
+
+    noButton = CreateWindow(TEXT("BUTTON"), TEXT("No"),
+                            WS_CHILD | WS_VISIBLE,
+                            250, 330, 120, 40,
+                            hwnd, (HMENU) NO_BUTTON, NULL, NULL
+    );
+
+    questionText = CreateWindow(TEXT("STATIC"), TEXT("Il tessuto presenta delle fibre?"),
+                                WS_CHILD | WS_VISIBLE | WS_BORDER,
+                                10, 10, 450, 300,
+                                hwnd, (HMENU) TEXT_BOX, NULL, NULL
+    );
+}
+
+void clickSi() {
+
+}
+
+void clickNo() {
+
+}
+
+void clickPulsante(WPARAM wparam) {
+    switch (LOWORD(wparam)) {
+        case YES_BUTTON:
+            if (questionText != NULL) {
+                clickSi();
+            }
+            break;
+        case NO_BUTTON:
+            if (questionText != NULL) {
+                clickNo();
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 LRESULT CALLBACK MainWindowProdecure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     switch (msg) {
-        case WM_CREATE: {
-
-            HWND yesButton = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
-                         WS_CHILD | WS_VISIBLE,
-                         110, 330, 120, 40,
-                         hwnd, (HMENU) YES_BUTTON, NULL, NULL
-            );
-
-            HWND noButton = CreateWindow(TEXT("BUTTON"), TEXT("No"),
-                         WS_CHILD | WS_VISIBLE,
-                         250, 330, 120, 40,
-                         hwnd, (HMENU) NO_BUTTON, NULL, NULL
-            );
-
-            HWND staticText = CreateWindow(TEXT("STATIC"), TEXT("Il tessuto presenta delle fibre?"),
-                         WS_CHILD | WS_VISIBLE | WS_BORDER,
-                         10, 10, 450, 300,
-                         hwnd, (HMENU) TEXT_BOX, NULL, NULL
-            );
-        }
+        case WM_CREATE:
+            creaFinestre(hwnd);
             break;
-
-        case WM_COMMAND: {
-
-            switch (LOWORD(wparam)) {
-                case YES_BUTTON:
-                    break;
-                case NO_BUTTON:
-                    break;
-                default:
-                    break;
-            }
-        }
+        case WM_COMMAND:
+            clickPulsante(wparam);
             break;
         case WM_DESTROY:
             PostQuitMessage(EXIT_SUCCESS);
