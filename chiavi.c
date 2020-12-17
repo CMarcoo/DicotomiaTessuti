@@ -20,13 +20,13 @@ chiave *crea_chiave(domanda *domanda_chiave, const char *nome, chiave **sottotip
     c = malloc(sizeof(struct chiave));
     if (c == NULL) {
         _set_errno(ERRORE_CREAZIONE_CHIAVE);
-        printf("Impossibile allocare memoria per chiave chiamata %s", nome);
+        printf("Impossibile allocare memoria per chiave chiamata %s!", nome);
     } else if (nome == NULL) {
         _set_errno(NOME_CHIAVE_NULLO);
         printf("Il nome della chiave era nullo.");
     } else if (domanda_chiave == NULL) {
         _set_errno(DOMANDA_NULLA);
-        printf("La domanda passata per la creazione della chiave %s era nulla", nome);
+        printf("La domanda passata per la creazione della chiave %s era nulla!", nome);
     } else {
         c->nome = nome;
         c->num_sottotipi = num_sottotipi;
@@ -35,7 +35,7 @@ chiave *crea_chiave(domanda *domanda_chiave, const char *nome, chiave **sottotip
             c->sottotipi = NULL;
             if (sottotipi != NULL) {
                 _set_errno(SOTTOTIPI_NON_NULLI);
-                printf("La chiave %s sarebbe dovuta essere creata con sottotipi nulli.", nome);
+                printf("La chiave %s sarebbe dovuta essere creata con sottotipi nulli!", nome);
             }
         } else {
             c->sottotipi = sottotipi;
@@ -62,7 +62,7 @@ void aggiungi_chiave(chiave *chiave, struct chiave *da_aggiungere) {
         void *nuovi_sottotipi = realloc(chiave->sottotipi, sizeof(struct chiave) * nuova_grandezza);
         if (nuovi_sottotipi == NULL) {
             _set_errno(ERRORE_INSERIMENTO);
-            printf("Qualcosa è andato storto nell'inserimento di %s in %s", da_aggiungere->nome, chiave->nome);
+            printf("Qualcosa è andato storto nell'inserimento di %s in %s!", da_aggiungere->nome, chiave->nome);
         } else {
             chiave->num_sottotipi = nuova_grandezza;
             chiave->sottotipi = ((struct chiave **) nuovi_sottotipi);
@@ -88,14 +88,14 @@ chiave **raggruppa_chiavi(int num_chiavi, ...) {
 
     if (chiavi == NULL) {
         _set_errno(ERRORE_CREAZIONE_CHIAVE);
-        printf("Qualcosa è andato storto con l'allocazione di chiavi.");
+        printf("Qualcosa è andato storto con l'allocazione di chiavi!");
     }
 
     for (int i = 0; i < num_chiavi; ++i) {
         ultima_chiave = va_arg(list, struct chiave*);
         if (ultima_chiave == NULL) {
             _set_errno(ERRORE_RAGGRUPPAMENTO);
-            printf("Errore durante raggruppamento di chiave ad indice %d", i);
+            printf("Errore durante raggruppamento di chiave ad indice %d!", i);
         } else {
             chiavi[i] = ultima_chiave;
         }
@@ -109,19 +109,24 @@ chiave **raggruppa_chiavi(int num_chiavi, ...) {
  * @param c La chiave.
  * @param livello Il livello di intentazione (0 per disabilitare).
  */
-void stampa_chiave(struct chiave *c, int livello) {
+void stampa_chiave(struct chiave *c, const int livello) {
     if (c == NULL) {
         _set_errno(CHIAVE_NULLA);
-        printf("Si è cercato di stampare una chiave nulla.");
+        printf("Si è cercato di stampare una chiave nulla!");
         return;
     }
 
     for (int i = 0; i < livello; ++i) {
-        printf(" ");
+        printf("\t");
     }
 
     printf("Domanda: %s\n", c->domanda_chiave->testo);
-    printf("\tTessuto %s%c\n", c->nome, livello != 0 ? ' ' : ':');
+
+    for (int i = 0; i < livello; ++i) {
+        printf("\t");
+    }
+
+    printf("- Tessuto %s%c\n", c->nome, livello != 0 ? ' ' : ':');
     if (c->num_sottotipi == 0) {
     } else {
         for (int i = 0; i < c->num_sottotipi; ++i) {

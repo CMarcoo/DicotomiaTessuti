@@ -9,31 +9,53 @@ chiave *crea_chiave_no_sottotipi(domanda *domanda, const char *nome) {
 }
 
 void crea_tessuti() {
-    /*
-    lasso = crea_chiave_no_sottotipi(, "Lasso");
 
-    denso = crea_chiave_no_sottotipi("Denso");
+    semplice = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_SEMPLICE), NOME_SEMPLICE);
 
-    cartilagineo = crea_chiave_no_sottotipi("Cartilagineo");
+    pluristratificato = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_PLURISTRATIFICATO), NOME_PLURISTRATIFICATO);
 
-    osseo = crea_chiave_no_sottotipi("Osseo");
+    esocrino = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_ESOCRINO), NOME_ESOCRINO);
 
-    emopoietico = crea_chiave_no_sottotipi("Emopoietico");
+    endocrino = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_ENDOCRINO), NOME_ENDOCRINO);
 
-    linfoide = crea_chiave_no_sottotipi("Linfoide");
+    ghiandolare = crea_chiave(crea_domanda(DOMANDA_GHIANDOLARI), NOME_GHIANDOLARI,
+                              raggruppa_chiavi(2, endocrino, esocrino), 2);
 
-    adiposo = crea_chiave_no_sottotipi("Adiposo");
+    rivestimento = crea_chiave(crea_domanda(DOMANDA_RIVESTIMENTO), NOME_RIVESTIMENTO,
+                               raggruppa_chiavi(2, semplice, pluristratificato), 2);
 
-    specializzato = crea_chiave("Specializzato", raggruppa_chiavi(2, emopoietico, linfoide), 2);
+    epiteliale = crea_chiave(crea_domanda(DOMANDA_EPITELIALE), NOME_EPITELIALE,
+                             raggruppa_chiavi(2, ghiandolare, rivestimento), 2);
 
-    sostegno = crea_chiave("Sostegno", raggruppa_chiavi(2, osseo, cartilagineo), 2);
+    /*-------------------------------------------------------------------------------------------------------------------*/
 
-    propriamente_detto = crea_chiave("Propriamente Detto", raggruppa_chiavi(2, lasso, denso), 2);
+    lasso = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_LASSO), NOME_LASSO);
 
-    cellulare = crea_chiave("A Costituzione Cellulare", raggruppa_chiavi(1, adiposo), 1);
+    denso = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_DENSO), NOME_DENSO);
 
-    connettivo = crea_chiave("Connettivo", raggruppa_chiavi(4, specializzato, sostegno, propriamente_detto, cellulare),4);
-    */
+    cartilagineo = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_CARTILAGINEO), NOME_CARTILAGINEO);
+
+    osseo = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_OSSEO), NOME_OSSEO);
+
+    emopoietico = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_EMOPOIETICO), NOME_EMOPOIETICO);
+
+    linfoide = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_LINFOIDE), NOME_LINFOIDE);
+
+    adiposo = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_ADIPOSO), NOME_ADIPOSO);
+
+    specializzato = crea_chiave(crea_domanda(DOMANDA_SPECIALIZZATO), NOME_SPECIALIZZATO,
+                                raggruppa_chiavi(2, emopoietico, linfoide), 2);
+
+    sostegno = crea_chiave(crea_domanda(DOMANDA_SOSTEGNO), NOME_SOSTEGNO, raggruppa_chiavi(2, osseo, cartilagineo), 2);
+
+    propriamente_detto = crea_chiave(crea_domanda(DOMANDA_PROPRIAMENTE_DETTO), NOME_PROPRIAMENTE_DETTO,
+                                     raggruppa_chiavi(2, lasso, denso), 2);
+
+    cellulare = crea_chiave(crea_domanda(DOMANDA_CELLULARE), NOME_CELLULARE, raggruppa_chiavi(1, adiposo),
+                            1);
+
+    connettivo = crea_chiave(crea_domanda(DOMANA_CONNETTIVO), NOME_CONNETTIVO,
+                             raggruppa_chiavi(4, specializzato, sostegno, propriamente_detto, cellulare), 4);
 
     /*-------------------------------------------------------------------------------------------------------------------*/
 
@@ -47,5 +69,9 @@ void crea_tessuti() {
 
     liscio = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_LISCIO), NOME_LISCIO);
 
-    muscolare = crea_chiave(crea_domanda(DOMANDA_MUSCOLARE), NOME_MUSCOLARE, raggruppa_chiavi(3, striato, cardiaco, liscio), 3);
+    muscolare = crea_chiave(crea_domanda(DOMANDA_MUSCOLARE), NOME_MUSCOLARE,
+                            raggruppa_chiavi(3, striato, cardiaco, liscio), 3);
+
+    /*-------------------------------------------------------------------------------------------------------------------*/
+
 }

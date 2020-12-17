@@ -7,6 +7,8 @@
 
 #include "domanda.h"
 
+#define NO_SOTTOTIPI 0
+
 typedef struct chiave chiave; // pre-dichiarazione per consentire riferimenti a se-stesso nella struttura.
 
 /**
@@ -25,7 +27,6 @@ typedef struct chiave chiave; // pre-dichiarazione per consentire riferimenti a 
  */
 typedef struct chiave {
     domanda *domanda_chiave;
-
     const char *nome;
     chiave **sottotipi;
     int num_sottotipi;
