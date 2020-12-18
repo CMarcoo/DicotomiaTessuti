@@ -3,3 +3,6 @@
 <br/>
 
 <h5> Progetto per la creazione di chiavi dicotomiche riguardanti tessuti animali. </h5>
+Immagine del progetto:
+
+![s](https://i.imgur.com/J5crYJ2.png)
