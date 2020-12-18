@@ -195,7 +195,7 @@ void carica_immagine(HWND hwnd, int numero_immagine) {
     const char *formato_img = "%d.bmp";
     char *nome_immagine = malloc(sizeof(char) * (strlen(formato_img) + numero_cifre(numero_immagine)));
     sprintf(nome_immagine, formato_img, numero_immagine);
-    img_tessuto = (HBITMAP) LoadImageW(NULL, L"1.bmp", IMAGE_BITMAP, 100, 100, LR_LOADFROMFILE);
+    img_tessuto = (HBITMAP) LoadImageW(NULL, L"1.bmp", IMAGE_BITMAP, 450, 300, LR_LOADFROMFILE);
     if (img_tessuto == NULL) {
         const char *format_errore = "Impossibile trovare immagine: <<%s>>\n Errore %lu";
         char *errore = malloc(sizeof(char) * (strlen(format_errore) + strlen(nome_immagine)));
