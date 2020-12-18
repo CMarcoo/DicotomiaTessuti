@@ -106,6 +106,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     return EXIT_SUCCESS;
 }
 
+/**
+ * Crea tutte le finestre usate in questo programma.
+ * @param hwnd La finestra principale.
+ */
 void crea_finestre(HWND hwnd) {
     bottoneSi = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
                              WS_CHILD | WS_VISIBLE,
@@ -134,6 +138,9 @@ void crea_finestre(HWND hwnd) {
     aggiorna_immagine();
 }
 
+/**
+ * Aggiorna il display dell'immagine corrente.
+ */
 void aggiorna_immagine() {
     SendMessage(box_img, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM) img_tessuto);
 }
@@ -146,6 +153,9 @@ void controllo_assegnazione_chiavi_generali(struct chiave *chiave, int indice) {
     }
 }
 
+/**
+ * Alloca i gruppi generali.
+ */
 void alloca_gruppi_generali() {
     gruppiGenerali = malloc(sizeof(struct chiave) * TESSUTI_GENERALI);
     if (gruppiGenerali == NULL) {
@@ -159,6 +169,10 @@ void alloca_gruppi_generali() {
     }
 }
 
+/**
+ * Gestisci il click del pulsante 'SI'
+ * @param main La finestra principale.
+ */
 void clickSi(HWND main) {
     const char *tessuto_format = "Tessuto Identificato: %s";
     const char *domanda_format = "Categoria confermata: %s\nVerranno fatte ulteriori domande per identificare la tipologia specifica.";
@@ -193,6 +207,10 @@ void clickSi(HWND main) {
     }
 }
 
+/**
+ * Gestisci il click del pulsante 'NO'
+ * @param main Finestra principale.
+ */
 void clickNo(HWND main) {
     int num_chiavi_totali_correnti = (chiave_corrente->num_sottotipi) - 1;
     if (num_chiavi_totali_correnti == num_chiave_corrente) {
@@ -208,6 +226,11 @@ void clickNo(HWND main) {
     }
 }
 
+/**
+ * Gestisci il click di un pulsante.
+ * @param wparam Il pulsante cliccato.
+ * @param main La finestra principale.
+ */
 void clickPulsante(WPARAM wparam, HWND main) {
     switch (LOWORD(wparam)) {
         case YES_BUTTON:
@@ -225,6 +248,11 @@ void clickPulsante(WPARAM wparam, HWND main) {
     }
 }
 
+/**
+ * Trova il numero di cifre di un numero intero.
+ * @param numero Il numero.
+ * @return Le sue cifre.
+ */
 int numero_cifre(int numero) {
     int n = numero;
     int c = 0;
@@ -235,8 +263,15 @@ int numero_cifre(int numero) {
     return c;
 }
 
+/**
+ * Carica un immagine di tipo bitmap.
+ * @param hwnd Finestra principale.
+ * @param numero_immagine Numero della immagine
+ * @param termina Se questo valore è vero il programma
+ *        si terminerà se non si trova una immagine
+ */
 void carica_immagine(HWND hwnd, int numero_immagine, bool termina) {
-    const char *formato_img = "%d.bmp";
+    const char *formato_img = "immagini\\%d.bmp";
     char *nome_immagine = malloc(sizeof(char) * (strlen(formato_img) + numero_cifre(numero_immagine)));
     sprintf(nome_immagine, formato_img, numero_immagine);
     img_tessuto = (HBITMAP) LoadImage(NULL, nome_immagine, IMAGE_BITMAP, 450, 300, LR_LOADFROMFILE);
