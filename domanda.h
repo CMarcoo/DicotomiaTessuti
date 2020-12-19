@@ -8,9 +8,6 @@
 #include <stdbool.h>
 #include "errori.h"
 
-#define SI true
-#define NO false
-
 /**
  * Rappresentazione di una domanda.
  * La domanda contiene un array di caratteri,

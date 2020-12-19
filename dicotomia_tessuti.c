@@ -20,6 +20,14 @@ LOGFONT lf;
 #define TEXT_BOX 3
 #define BOX_IMG 4
 
+#define BOTTONI_COORDINATE_Y 410
+#define GRANDEZZA_BOTTONI_X 120
+#define GRANDEZZA_BOTTONI_Y 40
+#define GRANDEZZA_DOMANDA_X 180
+#define GRANDEZZA_DOMANDA_Y 80
+#define GRANDEZZA_IMG_X 460
+#define GRANDEZZA_IMG_Y 300
+
 HWND principale;
 HWND bottoneSi;
 HWND bottoneNo;
@@ -81,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     WNDCLASSW windowsClass = {0};
 
-    windowsClass.hbrBackground = CreateSolidBrush(RGB(205, 235, 230));
+    windowsClass.hbrBackground = CreateSolidBrush(RGB(255, 255, 179));
     windowsClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     windowsClass.hInstance = hInst;
     windowsClass.lpszClassName = L"Chiavi Dicotomiche";
@@ -92,7 +100,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 
     principale = CreateWindowW(L"Chiavi Dicotomiche", L"Chiavi Dicotomiche",
-                               WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_BORDER | WS_THICKFRAME,
+                               (WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME) | WS_VISIBLE | WS_BORDER,
                                100, 100, 500, 500,
                                NULL, NULL, NULL, NULL);
 
@@ -113,25 +121,25 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 void crea_finestre(HWND hwnd) {
     bottoneSi = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
                              WS_CHILD | WS_VISIBLE,
-                             110, 400, 120, 40,
+                             110, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
                              hwnd, (HMENU) YES_BUTTON, NULL, NULL
     );
 
     bottoneNo = CreateWindow(TEXT("BUTTON"), TEXT("No"),
                              WS_CHILD | WS_VISIBLE,
-                             250, 400, 120, 40,
+                             250, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
                              hwnd, (HMENU) NO_BUTTON, NULL, NULL
     );
 
     testoDomanda = CreateWindow(TEXT("STATIC"), TEXT(chiave_corrente->domanda_chiave->testo),
                                 WS_CHILD | WS_VISIBLE | WS_BORDER,
-                                10, 10, 180, 80,
+                                10, 10, GRANDEZZA_DOMANDA_X, GRANDEZZA_DOMANDA_Y,
                                 hwnd, (HMENU) TEXT_BOX, NULL, NULL
     );
 
     box_img = CreateWindowW(L"STATIC", NULL,
                             WS_CHILD | WS_VISIBLE | WS_BORDER | SS_BITMAP,
-                            10, 95, 450, 300,
+                            10, 95, GRANDEZZA_IMG_X, GRANDEZZA_IMG_Y,
                             hwnd, (HMENU) BOX_IMG, NULL, NULL
     );
 
@@ -202,7 +210,6 @@ void clickSi(HWND main) {
             num_chiave_corrente = 0;
             alloca_gruppi_generali();
             SetWindowText(testoDomanda, TEXT(chiave_corrente->domanda_chiave->testo));
-            // DestroyWindow(main);
         }
     }
 }
@@ -214,7 +221,7 @@ void clickSi(HWND main) {
 void clickNo(HWND main) {
     int num_chiavi_totali_correnti = (chiave_corrente->num_sottotipi) - 1;
     if (num_chiavi_totali_correnti == num_chiave_corrente) {
-        int buttonPress = MessageBox(main, TEXT("Tessuto assente"), TEXT("Non e' stato trovato alcun tessuto"),
+        int buttonPress = MessageBox(main, TEXT("Tessuto non identificato."), TEXT("Tessuto Assente"),
                                      MB_OK | MB_ICONWARNING);
         if (buttonPress == IDOK) {
             DestroyWindow(main);
