@@ -39,6 +39,9 @@ chiave *crea_chiave(domanda *domanda_chiave, const char *nome, chiave **sottotip
             }
         } else {
             c->sottotipi = sottotipi;
+            for (int i = 0; i < num_sottotipi; ++i) {
+                c->sottotipi[i]->padrone = c;
+            }
         }
     }
     return c;

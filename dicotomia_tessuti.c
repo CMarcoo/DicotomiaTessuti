@@ -1,5 +1,6 @@
 //
-// Created by marco on 16/12/2020.
+// Creato da Marco il 16/12/2020.
+// Contribuenti: Gabriele, Emiliano, Andrea, Luca.
 //
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,18 +9,11 @@
 #include "tessuti.h"
 #include <strings.h>
 
-static inline void stampa_chiave_annidato(struct chiave *c) {
-    stampa_chiave(c, 0);
-}
-
-HFONT hfont;
-LOGFONT lf;
-
 #define YES_BUTTON 1
 #define NO_BUTTON 2
 #define TEXT_BOX 3
 #define BOX_IMG 4
-
+#define BOX_CATEGORIA 5
 #define BOTTONI_COORDINATE_Y 410
 #define GRANDEZZA_BOTTONI_X 120
 #define GRANDEZZA_BOTTONI_Y 40
@@ -27,14 +21,22 @@ LOGFONT lf;
 #define GRANDEZZA_DOMANDA_Y 80
 #define GRANDEZZA_IMG_X 460
 #define GRANDEZZA_IMG_Y 300
+#define TESSUTO_FORMAT "Tessuto Identificato: %s"
+#define DOMANDA_FORMAT "Categoria confermata: %s\nVerranno fatte ulteriori domande per identificare la tipologia specifica."
+#define CATEGORIA_IDENTIFICATA "Categoria Identificata"
+#define TESSUTO_TROVATO "Tessuto Trovato"
+#define CATEGORIA_ASSENTE "Categoria Corrente: (nessuna)"
+#define CATEGORIA_CORRENTE_FORMAT "Categoria Corrente: %s"
 
+FILE *fptr;
 HWND principale;
-HWND bottoneSi;
-HWND bottoneNo;
-HWND testoDomanda;
+HWND bottone_si;
+HWND bottone_no;
+HWND testo_domanda;
+HWND testo_categoria;
 HWND box_img;
 HBITMAP img_tessuto;
-chiave **gruppiGenerali;
+chiave **gruppi_generali;
 chiave *chiave_corrente;
 int num_chiave_corrente = 0;
 int numero_img_corrente = 1;
@@ -59,10 +61,21 @@ int numero_cifre(int);
 
 void crea_finestre(HWND);
 
+void entra_sottocategoria(HWND);
+
+void tessuto_identificato(HWND);
+
 void aggiorna_immagine();
+
+void scrivi_su_file(chiave *);
+
+bool penultima_immagine();
 
 /*-----------------------------------------------------------------------------------------*/
 
+/**
+ * https://docs.microsoft.com/it-it/windows/win32/learnwin32/writing-the-window-procedure
+ */
 LRESULT CALLBACK MainWindowProdecure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     switch (msg) {
         case WM_CREATE:
@@ -83,9 +96,24 @@ LRESULT CALLBACK MainWindowProdecure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM 
     return 0;
 }
 
+/**
+ * https://docs.microsoft.com/it-it/windows/win32/api/winbase/nf-winbase-winmain
+ */
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
     crea_tessuti();
     alloca_gruppi_generali();
+    stampa_chiave(epiteliale, 0);
+
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+    WCHAR buf[100];
+    wsprintfW(buf, L"output-%.2u-%.2u-%.2u.txt", st.wHour, st.wMinute, st.wSecond);
+    char buf_[100];
+    sprintf(buf_, "%ws", buf);
+    fptr = fopen(buf_, "w");
+    if (fptr == NULL) {
+        exit(EOF);
+    }
 
     WNDCLASSW windowsClass = {0};
 
@@ -111,7 +139,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         DispatchMessage(&message);
     }
 
+    fclose(fptr);
     return EXIT_SUCCESS;
+}
+
+void scrivi_su_file(chiave *c) {
+    fprintf(fptr, "%d.bmp -> %s\n", numero_img_corrente, c->nome);
 }
 
 /**
@@ -119,22 +152,22 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
  * @param hwnd La finestra principale.
  */
 void crea_finestre(HWND hwnd) {
-    bottoneSi = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
+    bottone_si = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
                              WS_CHILD | WS_VISIBLE,
-                             110, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
-                             hwnd, (HMENU) YES_BUTTON, NULL, NULL
+                              110, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
+                              hwnd, (HMENU) YES_BUTTON, NULL, NULL
     );
 
-    bottoneNo = CreateWindow(TEXT("BUTTON"), TEXT("No"),
+    bottone_no = CreateWindow(TEXT("BUTTON"), TEXT("No"),
                              WS_CHILD | WS_VISIBLE,
-                             250, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
-                             hwnd, (HMENU) NO_BUTTON, NULL, NULL
+                              250, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
+                              hwnd, (HMENU) NO_BUTTON, NULL, NULL
     );
 
-    testoDomanda = CreateWindow(TEXT("STATIC"), TEXT(chiave_corrente->domanda_chiave->testo),
+    testo_domanda = CreateWindow(TEXT("STATIC"), TEXT(chiave_corrente->domanda_chiave->testo),
                                 WS_CHILD | WS_VISIBLE | WS_BORDER,
-                                10, 10, GRANDEZZA_DOMANDA_X, GRANDEZZA_DOMANDA_Y,
-                                hwnd, (HMENU) TEXT_BOX, NULL, NULL
+                                 10, 10, GRANDEZZA_DOMANDA_X, GRANDEZZA_DOMANDA_Y,
+                                 hwnd, (HMENU) TEXT_BOX, NULL, NULL
     );
 
     box_img = CreateWindowW(L"STATIC", NULL,
@@ -142,6 +175,12 @@ void crea_finestre(HWND hwnd) {
                             10, 95, GRANDEZZA_IMG_X, GRANDEZZA_IMG_Y,
                             hwnd, (HMENU) BOX_IMG, NULL, NULL
     );
+
+
+    testo_categoria = CreateWindow(TEXT("STATIC"), TEXT(CATEGORIA_ASSENTE),
+                                   WS_CHILD | WS_VISIBLE | WS_BORDER,
+                                   20 + GRANDEZZA_DOMANDA_X, 10, GRANDEZZA_DOMANDA_X, GRANDEZZA_DOMANDA_Y,
+                                   hwnd, (HMENU) BOX_CATEGORIA, NULL, NULL);
 
     aggiorna_immagine();
 }
@@ -153,11 +192,18 @@ void aggiorna_immagine() {
     SendMessage(box_img, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM) img_tessuto);
 }
 
+/**
+ * Controlla la corretta assegnazione delle chiavi princiali.
+ * Il programma si chiudera con un codice d'errore predefinito
+ * se riscontrati dei problemi.
+ * @param chiave La chiave
+ * @param indice L' indice.
+ */
 void controllo_assegnazione_chiavi_generali(struct chiave *chiave, int indice) {
     if (chiave == NULL) {
         exit(ERRORE_CREAZIONE_CHIAVE);
     } else {
-        gruppiGenerali[indice] = chiave;
+        gruppi_generali[indice] = chiave;
     }
 }
 
@@ -165,15 +211,74 @@ void controllo_assegnazione_chiavi_generali(struct chiave *chiave, int indice) {
  * Alloca i gruppi generali.
  */
 void alloca_gruppi_generali() {
-    gruppiGenerali = malloc(sizeof(struct chiave) * TESSUTI_GENERALI);
-    if (gruppiGenerali == NULL) {
+    gruppi_generali = malloc(sizeof(struct chiave) * TESSUTI_GENERALI);
+    if (gruppi_generali == NULL) {
         exit(ERRORE_RAGGRUPPAMENTO);
     } else {
-        struct chiave *chiavi[4] = {nervoso, muscolare, epiteliale, connettivo};
+        struct chiave *chiavi[] = {nervoso, muscolare, connettivo, epiteliale};
         chiave_corrente = chiavi[0];
-        for (int i = 0; i < TESSUTI_GENERALI; ++i) {
-            controllo_assegnazione_chiavi_generali(chiavi[i], i);
+        for (int t = 0; t < TESSUTI_GENERALI; ++t) {
+            controllo_assegnazione_chiavi_generali(chiavi[t], t);
         }
+    }
+}
+
+/**
+ * Entra in una sottocategoria
+ * @param hwnd Finestra principale
+ */
+void entra_sottocategoria(HWND hwnd) {
+    char *categoria_trovata = malloc(sizeof(char) * (strlen(DOMANDA_FORMAT) + strlen(chiave_corrente->nome)));
+    sprintf(categoria_trovata, DOMANDA_FORMAT, chiave_corrente->nome);
+
+    int buttonPress = MessageBox(hwnd, TEXT(categoria_trovata), TEXT(CATEGORIA_IDENTIFICATA),
+                                 MB_YESNO | MB_ICONQUESTION);
+
+    if (buttonPress == IDYES) {
+        gruppi_generali = chiave_corrente->sottotipi;
+        num_chiave_corrente = 0;
+        chiave_corrente = gruppi_generali[0];
+        SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
+        char *categoria = malloc(sizeof(char) * (strlen(CATEGORIA_CORRENTE_FORMAT) + strlen(chiave_corrente->padrone->nome)));
+        sprintf(categoria, CATEGORIA_CORRENTE_FORMAT, chiave_corrente->padrone->nome);
+        SetWindowText(testo_categoria, TEXT(categoria));
+    }
+}
+
+/**
+ * Notifica l'utente della corretta identificazione di un tessuto.
+ * @param hwnd Finestra principale.
+ */
+void tessuto_identificato(HWND hwnd) {
+    char *tessuto_trovato_msg = malloc(sizeof(char) * (strlen(TESSUTO_FORMAT) + strlen(chiave_corrente->nome)));
+    sprintf(tessuto_trovato_msg, TESSUTO_FORMAT, chiave_corrente->nome);
+    int buttonPress = MessageBox(hwnd, TEXT(tessuto_trovato_msg), TEXT(TESSUTO_TROVATO),
+                                 MB_OK | MB_ICONINFORMATION);
+    if (buttonPress == IDOK) {
+        scrivi_su_file(chiave_corrente);
+        numero_img_corrente += 1;
+        carica_immagine(hwnd, numero_img_corrente, true);
+        aggiorna_immagine();
+
+        num_chiave_corrente = 0;
+        alloca_gruppi_generali();
+        SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
+        SetWindowText(testo_categoria, TEXT(CATEGORIA_ASSENTE));
+    }
+}
+
+bool penultima_immagine() {
+    int num_chiavi_totali_correnti;
+    if (chiave_corrente->padrone == NULL) {
+        num_chiavi_totali_correnti = TESSUTI_GENERALI;
+    } else {
+        num_chiavi_totali_correnti = chiave_corrente->num_sottotipi;
+    }
+
+    if (num_chiavi_totali_correnti - 1 == num_chiave_corrente) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -182,35 +287,10 @@ void alloca_gruppi_generali() {
  * @param main La finestra principale.
  */
 void clickSi(HWND main) {
-    const char *tessuto_format = "Tessuto Identificato: %s";
-    const char *domanda_format = "Categoria confermata: %s\nVerranno fatte ulteriori domande per identificare la tipologia specifica.";
-    const char *nome_tessuto_corrente = chiave_corrente->nome;
-
     if (chiave_corrente->num_sottotipi != NO_SOTTOTIPI) {
-        char *categoria_trovata = malloc(sizeof(char) * (strlen(domanda_format) + strlen(chiave_corrente->nome)));
-        sprintf(categoria_trovata, domanda_format, chiave_corrente->nome);
-        int buttonPress = MessageBox(main, TEXT(categoria_trovata), TEXT("Categoria identificata"),
-                                     MB_YESNO | MB_ICONQUESTION);
-        if (buttonPress == IDYES) {
-            gruppiGenerali = chiave_corrente->sottotipi;
-            num_chiave_corrente = 0;
-            chiave_corrente = gruppiGenerali[0];
-            SetWindowText(testoDomanda, TEXT(chiave_corrente->domanda_chiave->testo));
-        }
+        entra_sottocategoria(main);
     } else {
-        char *tessuto_trovato_msg = malloc(sizeof(char) * (strlen(tessuto_format) + strlen(nome_tessuto_corrente)));
-        sprintf(tessuto_trovato_msg, tessuto_format, nome_tessuto_corrente);
-        int buttonPress = MessageBox(main, TEXT(tessuto_trovato_msg), TEXT("Tessuto trovato"),
-                                     MB_OK | MB_ICONINFORMATION);
-        if (buttonPress == IDOK) {
-            numero_img_corrente += 1;
-            carica_immagine(main, numero_img_corrente, true);
-            aggiorna_immagine();
-
-            num_chiave_corrente = 0;
-            alloca_gruppi_generali();
-            SetWindowText(testoDomanda, TEXT(chiave_corrente->domanda_chiave->testo));
-        }
+        tessuto_identificato(main);
     }
 }
 
@@ -219,18 +299,40 @@ void clickSi(HWND main) {
  * @param main Finestra principale.
  */
 void clickNo(HWND main) {
-    int num_chiavi_totali_correnti = (chiave_corrente->num_sottotipi) - 1;
+
+    printf("%d", penultima_immagine());
+    num_chiave_corrente++;
+    chiave_corrente = gruppi_generali[num_chiave_corrente];
+    if (penultima_immagine()) {
+        clickSi(main);
+    } else {
+        SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
+    }
+
+    /*
+    int num_chiavi_totali_correnti;
+    if (chiave_corrente->padrone == NULL) {
+        num_chiavi_totali_correnti = TESSUTI_GENERALI;
+    } else {
+        num_chiavi_totali_correnti = chiave_corrente->num_sottotipi;
+    }
+    printf("%d - %d\n", num_chiavi_totali_correnti, num_chiave_corrente);
     if (num_chiavi_totali_correnti == num_chiave_corrente) {
-        int buttonPress = MessageBox(main, TEXT("Tessuto non identificato."), TEXT("Tessuto Assente"),
-                                     MB_OK | MB_ICONWARNING);
+        int buttonPress = MessageBox(main, TEXT("Ulteriori domande verranno effettuate\nper trovare la categoria piu' specifica."), TEXT("Identificazione"),
+                                     MB_YESNO | MB_ICONWARNING);
         if (buttonPress == IDOK) {
-            DestroyWindow(main);
+            clickSi(main);
+        } else if (buttonPress == IDNO) {
+            num_chiave_corrente++;
+            chiave_corrente = gruppi_generali[num_chiave_corrente];
+            clickSi(main);
         }
     } else {
-        num_chiave_corrente += 1;
-        chiave_corrente = gruppiGenerali[num_chiave_corrente];
-        SetWindowText(testoDomanda, TEXT(chiave_corrente->domanda_chiave->testo));
+        num_chiave_corrente++;
+        chiave_corrente = gruppi_generali[num_chiave_corrente];
+        SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
     }
+    */
 }
 
 /**
@@ -241,12 +343,12 @@ void clickNo(HWND main) {
 void clickPulsante(WPARAM wparam, HWND main) {
     switch (LOWORD(wparam)) {
         case YES_BUTTON:
-            if (testoDomanda != NULL) {
+            if (testo_domanda != NULL) {
                 clickSi(main);
             }
             break;
         case NO_BUTTON:
-            if (testoDomanda != NULL) {
+            if (testo_domanda != NULL) {
                 clickNo(main);
             }
             break;
@@ -283,13 +385,13 @@ void carica_immagine(HWND hwnd, int numero_immagine, bool termina) {
     sprintf(nome_immagine, formato_img, numero_immagine);
     img_tessuto = (HBITMAP) LoadImage(NULL, nome_immagine, IMAGE_BITMAP, 450, 300, LR_LOADFROMFILE);
     if (img_tessuto == NULL) {
+        if (termina) {
+            exit(IMMAGINE_ASSENTE);
+        }
         const char *format_errore = "Impossibile trovare immagine: <<%s>>\n Errore %lu";
         char *errore = malloc(sizeof(char) * (strlen(format_errore) + strlen(nome_immagine)));
         sprintf(errore, format_errore, nome_immagine, GetLastError());
         MessageBox(hwnd, TEXT(errore), TEXT("Errore immagine"), MB_OK | MB_ICONWARNING);
         carica_immagine(hwnd, numero_immagine + 1, true);
-        if (termina) {
-            exit(IMMAGINE_ASSENTE);
-        }
     }
 }

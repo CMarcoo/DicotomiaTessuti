@@ -28,6 +28,7 @@ typedef struct chiave chiave; // pre-dichiarazione per consentire riferimenti a 
 typedef struct chiave {
     domanda *domanda_chiave;
     const char *nome;
+    chiave *padrone;
     chiave **sottotipi;
     int num_sottotipi;
 } chiave;
