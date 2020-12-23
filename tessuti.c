@@ -49,17 +49,15 @@ void crea_tessuti() {
   //          crea_domanda(DOMANDA_CILINDRICO_PSEUDOSTRATIFICATO),
   //          NOME_CILINDRICO_PSEUDOSTRATIFICATO);
 
-    cilindrico_semplice_ciliato = crea_chiave_no_sottotipi(crea_domanda(NOME_CILINDRICO_SEMPLICE_CILIATO), NOME_CILINDRICO_SEMPLICE_CILIATO);
-
     cilindro_fake = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_CILINDRICO_SEMPLICE), NOME_CILINDRICO_SEMPLICE);
 
-    cilindrico = crea_chiave(crea_domanda(DOMANDA_CILINDRICO_SEMPLICE_CILIATO), NOME_CILINDRICO_SEMPLICE_CILIATO, raggruppa_chiavi(2, cilindrico_semplice_ciliato, cilindro_fake), 2);
+    cilindrico = crea_chiave(crea_domanda(DOMANDA_CILINDRICO_PSEUDOSTRATIFICATO), NOME_CILINDRICO_SEMPLICE, raggruppa_chiavi(2, cilindrico_semplice_ciliato, cilindro_fake), 2);
 
     cubico_semplice_fake = crea_chiave_no_sottotipi(crea_domanda("ASSENTE"), NOME_CUBICO_SEMPLICE);
 
     cubico_ghiandolare = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_CUBICO_GHIANDOALARE), NOME_CUBICO_GHIANDOLARE);
 
-    cubico = crea_chiave(crea_domanda(DOMANDA_CUBICO_GHIANDOALARE), NOME_CUBICO_GHIANDOLARE, raggruppa_chiavi(2, cubico_ghiandolare, cubico_semplice_fake), 2);
+    cubico = crea_chiave(crea_domanda(DOMANDA_CUBICO_GHIANDOALARE), NOME_CUBICO, raggruppa_chiavi(2, cubico_ghiandolare, cubico_semplice_fake), 2);
 
     non_pavimentosi = crea_chiave(crea_domanda("ASSENTE"), "Monostratificati", raggruppa_chiavi(2, cilindrico, cubico), 2);
 

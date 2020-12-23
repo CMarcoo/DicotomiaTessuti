@@ -138,7 +138,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     MSG message = {0};
 
-    //   FreeConsole();
+    FreeConsole();
 
     while (GetMessage(&message, NULL, (UINT) NULL, (UINT) NULL)) {
         TranslateMessage(&message);
