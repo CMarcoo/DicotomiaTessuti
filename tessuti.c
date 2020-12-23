@@ -39,9 +39,11 @@ void crea_tessuti() {
     cilindrico_semplice_ciliato = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_CILINDRICO_SEMPLICE_CILIATO),
                                                            NOME_CILINDRICO_SEMPLICE_CILIATO);
 
-    pavimentoso_pluristratificato = crea_chiave(crea_domanda(DOMANDA_PAVIMENTOSO_PLURISTRATIFICATO),
-                                                NOME_PAVIMENTOSO_PLURISTRATIFICATO,
-                                                raggruppa_chiavi(1, cilindrico_pseudostratificato_ciliato), 1);
+   // pavimentoso_pluristratificato = crea_chiave(crea_domanda(DOMANDA_PAVIMENTOSO_PLURISTRATIFICATO),
+   //                                             NOME_PAVIMENTOSO_PLURISTRATIFICATO,
+   //                                             raggruppa_chiavi(1, cilindrico_pseudostratificato_ciliato), 1);
+
+   pavimentoso_pluristratificato = crea_chiave_no_sottotipi(crea_domanda(DOMANDA_PAVIMENTOSO_PLURISTRATIFICATO), NOME_PAVIMENTOSO_PLURISTRATIFICATO);
 
   //  cilindrico_pseudostratificato_fake = crea_chiave_no_sottotipi(
   //          crea_domanda(DOMANDA_CILINDRICO_PSEUDOSTRATIFICATO),
@@ -79,7 +81,7 @@ void crea_tessuti() {
     cubico_pluri = crea_chiave(crea_domanda("ASSENTE"), "Pluristratificato Cubico",
                          raggruppa_chiavi(2, cubico_pluri_ghiandolare, cubico_pluri_fake), 2);
 
-    sottogruppo_pluri = crea_chiave(crea_domanda("ASSENTE"), "Pluristratificati", raggruppa_chiavi(2, cilindrico_pluristratificato,cubico_pluri),2);
+    sottogruppo_pluri = crea_chiave(crea_domanda("ASSENTE"), "Pluristratificati", raggruppa_chiavi(2, cilindrico_pluristratificato, cubico_pluri),2);
 
     pluristratificati = crea_chiave(crea_domanda(DOMANDA_PLURISTRATIFICATI), NOME_PLURISTRATIFICATI,
                                     raggruppa_chiavi(2,

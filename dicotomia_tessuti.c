@@ -247,7 +247,9 @@ void entra_sottocategoria(HWND hwnd) {
 
 
         SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
-        SetWindowText(testo_categoria, TEXT(chiave_corrente->padrone->nome));
+        char *testo = malloc(sizeof(char) * ( strlen(CATEGORIA_CORRENTE_FORMAT) + strlen(chiave_corrente->padrone->nome) - 2));
+        sprintf(testo, CATEGORIA_CORRENTE_FORMAT, chiave_corrente->padrone->nome);
+        SetWindowText(testo_categoria, TEXT(testo));
     }
 }
 

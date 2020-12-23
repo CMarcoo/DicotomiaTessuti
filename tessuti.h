@@ -58,7 +58,7 @@ void crea_tessuti();
 #define NOME_PLURISTRATIFICATI "Pluristratificati"
 #define NOME_CILINDRICO "Cilindrico"
 #define NOME_CUBICO "Cubico"
-#define NOME_CUBICO_GHIANDOLARE "Ghiandolare"
+#define NOME_CUBICO_GHIANDOLARE "Cubico Ghiandolare"
 #define NOME_PAVIMENTOSO_SEMPLICE "Pavimentoso Semplice"
 #define NOME_CUBICO_SEMPLICE "Cubico Semplice"
 #define NOME_CILINDRICO_SEMPLICE "Cilindrico Semplice"
