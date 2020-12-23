@@ -44,6 +44,7 @@ chiave *crea_chiave(domanda *domanda_chiave, const char *nome, chiave **sottotip
             }
         }
     }
+    printf("\nSto creando chiave: %s\n", nome);
     return c;
 }
 

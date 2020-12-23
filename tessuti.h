@@ -64,22 +64,25 @@ void crea_tessuti();
 #define NOME_CILINDRICO_SEMPLICE "Cilindrico Semplice"
 #define NOME_PAVIMENTOSO_PLURISTRATIFICATO "Pavimentoso Pluristratificato"
 #define NOME_CUBICO_PLURISTRATIFICATO "Cubico Pluristratificato"
-#define NOME_CILINDRICO_PSEUDOSTRATIFICATO "Cilindrico Pseudostratificato"
-#define NOME_CILINDRICO_PSEUDOSTRATIFICATO_CILIATO "Cilindrico Pseudostratificato Ciliato"
+#define NOME_CILINDRICO_PLURISTRATIFICATO "Cilindrico Pluristratificato"
+#define NOME_CILINDRICO_PLURISTRATIFICATO_CILIATO "Cilindrico Pluristratificato Ciliato"
 #define NOME_CILINDRICO_SEMPLICE_CILIATO "Cilindrico Semplice Ciliato"
 
 /*-------------------------------------------------------------------------*/
 
 // extra
 
-chiave *cilindrico_pseudostratificato_ciliato,
-*cilindrico_semplice_ciliato, *non_pavimentosi;
+chiave *cilindrico_pseudostratificato_ciliato, *cilindrico_pseudostratificato_fake,
+*cilindrico_semplice_ciliato, *non_pavimentosi, *cilindro_fake, *cubico_semplice_fake,
+*cubico_pluri_fake, *cubico_pluri_ghiandolare, *cubico_pluri, *cilindrico_pluristratificato,
+*cilindrico_pluristratificato_fake, *cilindrico_pluristratificato_ciliato, *cilindrico_semplice,
+*sottogruppo_pluri;
 
 // gruppo specifico:
 
-chiave *pavimentoso_semplice, *cubico_semplice, *cilindrico_semplice,
-        *pavimentoso_pluristratificato, *cubico_pluristratificato, *cilindrico_pseudostratificato,
-        *cubico_ghiandolare;
+chiave *pavimentoso_semplice,
+        *pavimentoso_pluristratificato,
+        *cubico_ghiandolare, *cubico_semplice;
 
 // altro gruppo
 

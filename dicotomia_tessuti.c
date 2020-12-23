@@ -102,6 +102,10 @@ LRESULT CALLBACK MainWindowProdecure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) {
     crea_tessuti();
     alloca_gruppi_generali();
+
+    stampa_chiave(nervoso, 0);
+    stampa_chiave(muscolare, 0);
+    stampa_chiave(connettivo, 0);
     stampa_chiave(epiteliale, 0);
 
     SYSTEMTIME st;
@@ -134,6 +138,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     MSG message = {0};
 
+    //   FreeConsole();
+
     while (GetMessage(&message, NULL, (UINT) NULL, (UINT) NULL)) {
         TranslateMessage(&message);
         DispatchMessage(&message);
@@ -153,19 +159,19 @@ void scrivi_su_file(chiave *c) {
  */
 void crea_finestre(HWND hwnd) {
     bottone_si = CreateWindow(TEXT("BUTTON"), TEXT("Si"),
-                             WS_CHILD | WS_VISIBLE,
+                              WS_CHILD | WS_VISIBLE,
                               110, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
                               hwnd, (HMENU) YES_BUTTON, NULL, NULL
     );
 
     bottone_no = CreateWindow(TEXT("BUTTON"), TEXT("No"),
-                             WS_CHILD | WS_VISIBLE,
+                              WS_CHILD | WS_VISIBLE,
                               250, BOTTONI_COORDINATE_Y, GRANDEZZA_BOTTONI_X, GRANDEZZA_BOTTONI_Y,
                               hwnd, (HMENU) NO_BUTTON, NULL, NULL
     );
 
     testo_domanda = CreateWindow(TEXT("STATIC"), TEXT(chiave_corrente->domanda_chiave->testo),
-                                WS_CHILD | WS_VISIBLE | WS_BORDER,
+                                 WS_CHILD | WS_VISIBLE | WS_BORDER,
                                  10, 10, GRANDEZZA_DOMANDA_X, GRANDEZZA_DOMANDA_Y,
                                  hwnd, (HMENU) TEXT_BOX, NULL, NULL
     );
@@ -232,16 +238,16 @@ void entra_sottocategoria(HWND hwnd) {
     sprintf(categoria_trovata, DOMANDA_FORMAT, chiave_corrente->nome);
 
     int buttonPress = MessageBox(hwnd, TEXT(categoria_trovata), TEXT(CATEGORIA_IDENTIFICATA),
-                                 MB_YESNO | MB_ICONQUESTION);
+                                 MB_OK | MB_ICONQUESTION);
 
-    if (buttonPress == IDYES) {
+    if (buttonPress == IDOK) {
         gruppi_generali = chiave_corrente->sottotipi;
         num_chiave_corrente = 0;
         chiave_corrente = gruppi_generali[0];
+
+
         SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
-        char *categoria = malloc(sizeof(char) * (strlen(CATEGORIA_CORRENTE_FORMAT) + strlen(chiave_corrente->padrone->nome)));
-        sprintf(categoria, CATEGORIA_CORRENTE_FORMAT, chiave_corrente->padrone->nome);
-        SetWindowText(testo_categoria, TEXT(categoria));
+        SetWindowText(testo_categoria, TEXT(chiave_corrente->padrone->nome));
     }
 }
 
@@ -269,16 +275,22 @@ void tessuto_identificato(HWND hwnd) {
 
 bool penultima_immagine() {
     int num_chiavi_totali_correnti;
+
     if (chiave_corrente->padrone == NULL) {
         num_chiavi_totali_correnti = TESSUTI_GENERALI;
+        if (num_chiavi_totali_correnti - 1 == num_chiave_corrente) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        num_chiavi_totali_correnti = chiave_corrente->num_sottotipi;
-    }
+        num_chiavi_totali_correnti = chiave_corrente->padrone->num_sottotipi;
 
-    if (num_chiavi_totali_correnti - 1 == num_chiave_corrente) {
-        return true;
-    } else {
-        return false;
+        if (num_chiavi_totali_correnti - 1 == num_chiave_corrente) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -299,40 +311,14 @@ void clickSi(HWND main) {
  * @param main Finestra principale.
  */
 void clickNo(HWND main) {
-
-    printf("%d", penultima_immagine());
     num_chiave_corrente++;
     chiave_corrente = gruppi_generali[num_chiave_corrente];
+
     if (penultima_immagine()) {
         clickSi(main);
     } else {
         SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
     }
-
-    /*
-    int num_chiavi_totali_correnti;
-    if (chiave_corrente->padrone == NULL) {
-        num_chiavi_totali_correnti = TESSUTI_GENERALI;
-    } else {
-        num_chiavi_totali_correnti = chiave_corrente->num_sottotipi;
-    }
-    printf("%d - %d\n", num_chiavi_totali_correnti, num_chiave_corrente);
-    if (num_chiavi_totali_correnti == num_chiave_corrente) {
-        int buttonPress = MessageBox(main, TEXT("Ulteriori domande verranno effettuate\nper trovare la categoria piu' specifica."), TEXT("Identificazione"),
-                                     MB_YESNO | MB_ICONWARNING);
-        if (buttonPress == IDOK) {
-            clickSi(main);
-        } else if (buttonPress == IDNO) {
-            num_chiave_corrente++;
-            chiave_corrente = gruppi_generali[num_chiave_corrente];
-            clickSi(main);
-        }
-    } else {
-        num_chiave_corrente++;
-        chiave_corrente = gruppi_generali[num_chiave_corrente];
-        SetWindowText(testo_domanda, TEXT(chiave_corrente->domanda_chiave->testo));
-    }
-    */
 }
 
 /**
